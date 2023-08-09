@@ -29,10 +29,10 @@ module.exports.getUserById = (req, res) => {
     .orFail(new Error('notValidId'))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.message === 'notValidId') {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+      } else if (err.message === 'notValidId') {
         res.status(404).send({ message: 'Пользователь по указанному id не найден' });
-      } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные пользователя' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
